@@ -2,7 +2,7 @@ name: sync
 
 on:
   schedule:
-    - cron:  '0 1 * * *'
+    - cron:  '0 */8 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,6 +28,7 @@ jobs:
         pip install -r requirements.txt
         sudo apt-get -y update
         sudo apt-get -y install skopeo
+        skopeo --version
     - name: generate_sync_yaml
       run: |
         python generate_sync_yaml.py
