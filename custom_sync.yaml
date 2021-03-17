@@ -1,8 +1,0 @@
-k8s.gcr.io:
-  images:
-    defaultbackend-amd64: 
-     - '1.5'
-    pause:
-     - '3.5'
-     - '3.4.1'
-     - '3.3'

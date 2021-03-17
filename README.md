@@ -16,7 +16,7 @@ k8s.gcr.io/kube-proxy
 k8s.gcr.io/kube-apiserver
 k8s.gcr.io/kube-scheduler
 k8s.gcr.io/kube-controller-manager
-k8s.gcr.io/ingress-nginx/controlle
+k8s.gcr.io/ingress-nginx/controller
 k8s.gcr.io/metrics-server/metrics-server
 ```
 
