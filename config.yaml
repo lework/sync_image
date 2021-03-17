@@ -1,13 +1,11 @@
 last: 4
 images:
   k8s.gcr.io:
-    - pause
     - etcd
     - coredns
     - kube-proxy
     - kube-apiserver
     - kube-scheduler
     - kube-controller-manager
-    - defaultbackend-amd64
     - metrics-server/metrics-server
     - ingress-nginx/controller

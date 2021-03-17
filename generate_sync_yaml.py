@@ -34,12 +34,28 @@ def get_tags(repo, image):
 
     minor_data = {}
     for tag in tag_release_list:
-        t1, t2, t3 = tag.split('.')
+        tag_split = tag.split('.')
+        try:
+            t1 = tag_split[0]
+        except Exception:
+            t1 = ''
+        try:
+            t2 = tag_split[1]
+        except Exception:
+            t2 = ''
+        try:
+            t3 = tag_split[2]
+        except Exception:
+            t3 = ''
         key = t1 + '.' + t2
+        try:
+            t3 = int(t3)
+        except Exception:
+            continue
         if key not in minor_data:
-            minor_data[key] = [int(t3)]
+            minor_data[key] = [t3]
         else:
-            minor_data[key].append(int(t3))
+            minor_data[key].append(t3)
 
     #print(minor_data)
 
