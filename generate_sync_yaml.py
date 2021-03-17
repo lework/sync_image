@@ -30,7 +30,7 @@ def get_tags(repo, image):
     for index, tag in enumerate(tag_list):
         if '-' not in tag:
             tag_release_list.append(tag)
-    print(tag_release_list)
+    #print(tag_release_list)
 
     minor_data = {}
     for tag in tag_release_list:
@@ -41,13 +41,13 @@ def get_tags(repo, image):
         else:
             minor_data[key].append(int(t3))
 
-    print(minor_data)
+    #print(minor_data)
 
     max_minor_list = []
     for i in minor_data:
         max_minor_list.append(i + '.' + str(max(minor_data[i])))
 
-    print(max_minor_list)
+    #print(max_minor_list)
 
     max_minor_list.sort(key=lambda s: list(map(int, s.replace('v', '').split('.'))), reverse=True)
 
