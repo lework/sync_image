@@ -72,6 +72,15 @@ def get_repo_tags(repo, image, limit=5):
         sha256_data = manifest_data[manifest]
         sha256_tag = sha256_data.get('tag', [])
         if len(sha256_tag) > 0:
+            # 去除 alpha
+            if 'alpha' in sha256_tag[0]:
+                continue
+            # 去除 beta
+            if 'beta' in sha256_tag[0]:
+                continue
+            # 去除 rc
+            if 'rc' in sha256_tag[0]:
+                continue
             tags_data.append({
                 'tag': sha256_tag[0],
                 'timeUploadedMs': sha256_data.get('timeUploadedMs')
@@ -86,15 +95,7 @@ def get_repo_tags(repo, image, limit=5):
         # 去除同步过的
         if t['tag'] in image_aliyun_tags:
             continue
-        # 去除 alpha
-        if 'alpha' in t['tag']:
-            continue
-        # 去除 beta
-        if 'beta' in t['tag']:
-            continue
-        # 去除 rc
-        if 'rc' in t['tag']:
-            continue
+
         tags.append(t['tag'])
 
     print('[repo tag]', tags)
