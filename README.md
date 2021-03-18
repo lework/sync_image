@@ -1,5 +1,7 @@
 # sync_image
 
+[![sync](https://github.com/lework/sync_image/actions/workflows/sync.yml/badge.svg?branch=main)](https://github.com/lework/sync_image/actions/workflows/sync.yml)
+
 Synchronize container image
 
 ## 使用
@@ -7,7 +9,7 @@ Synchronize container image
 仓库使用 `Github Action` 每天自动运行脚本同步镜像到阿里云。
 
 动态同步的镜像列表。
-> 获取最新的4个tag用于同步。
+> 默认获取最新的 5 个 tag 用于同步。
 
 ```
 k8s.gcr.io/etcd
@@ -21,7 +23,7 @@ k8s.gcr.io/metrics-server/metrics-server
 ```
 
 静态同步的镜像列表。
-> 使用指定的tag用于同步。
+> 使用指定的 tag 用于同步。
 
 ```
 k8s.gcr.io/pause
@@ -48,6 +50,6 @@ $ docker pull registry.cn-hangzhou.aliyuncs.com/kainstall/kube-scheduler:[镜像
 ## 文件介绍
 
 - `config.yaml`: 供 `generate_sync_yaml.py` 脚本使用，此文件配置了需要动态(获取`last`个最新的版本)同步的镜像列表。
-- `custom_sync.yaml`: 自定义的 `skopeo` 同步源配置文件。
-- `generate_sync_yaml.py`: 根据配置，动态生成 `skopeo` 同步源配置文件。
+- `custom_sync.yaml`: 自定义的 [`skopeo`](https://github.com/containers/skopeo) 同步源配置文件。
+- `generate_sync_yaml.py`: 根据配置，动态生成 [`skopeo`](https://github.com/containers/skopeo) 同步源配置文件。
 - `sync.sh`: 用于执行同步操作。
