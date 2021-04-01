@@ -9,3 +9,4 @@ images:
     - kube-controller-manager
     - metrics-server/metrics-server
     - ingress-nginx/controller
+    - dns/k8s-dns-node-cache
