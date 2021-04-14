@@ -2,11 +2,11 @@ last: 5
 images:
   k8s.gcr.io:
     - etcd
-    - coredns
     - kube-proxy
     - kube-apiserver
     - kube-scheduler
     - kube-controller-manager
+    - coredns/coredns
+    - dns/k8s-dns-node-cache
     - metrics-server/metrics-server
     - ingress-nginx/controller
-    - dns/k8s-dns-node-cache
