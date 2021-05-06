@@ -10,3 +10,4 @@ images:
     - dns/k8s-dns-node-cache
     - metrics-server/metrics-server
     - ingress-nginx/controller
+    - sig-storage/nfs-subdir-external-provisioner
