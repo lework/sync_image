@@ -11,3 +11,4 @@ images:
     - metrics-server/metrics-server
     - ingress-nginx/controller
     - sig-storage/nfs-subdir-external-provisioner
+    - kube-state-metrics/kube-state-metrics
