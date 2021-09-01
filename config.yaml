@@ -10,5 +10,6 @@ images:
     - dns/k8s-dns-node-cache
     - metrics-server/metrics-server
     - ingress-nginx/controller
+    - ingress-nginx/kube-webhook-certgen
     - sig-storage/nfs-subdir-external-provisioner
     - kube-state-metrics/kube-state-metrics
