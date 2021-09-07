@@ -1,5 +1,27 @@
 last: 5
 images:
+  docker.elastic.co:
+    - elasticsearch/elasticsearch
+    - kibana/kibana
+    - logstash/logstash
+    - beats/filebeat
+    - beats/heartbeat
+    - beats/packetbeat
+    - beats/auditbeat
+    - beats/journalbeat
+    - beats/metricbeat
+    - apm/apm-server
+    - app-search/app-search
+  quay.io:
+    - coreos/flannel
+    - cephcsi/cephcsi
+    - prometheus/prometheus
+    - prometheus/alertmanager
+    - prometheus/pushgateway
+    - prometheus/blackbox-exporter
+    - prometheus/node-exporter
+    - prometheus/prometheus-config-reloader
+    - prometheus-operator/prometheus-operator
   k8s.gcr.io:
     - etcd
     - kube-proxy
@@ -11,5 +33,10 @@ images:
     - metrics-server/metrics-server
     - ingress-nginx/controller
     - ingress-nginx/kube-webhook-certgen
-    - sig-storage/nfs-subdir-external-provisioner
     - kube-state-metrics/kube-state-metrics
+    - sig-storage/nfs-subdir-external-provisioner
+    - sig-storage/csi-node-driver-registrar
+    - sig-storage/csi-provisioner
+    - sig-storage/csi-resizer
+    - sig-storage/csi-snapshotter
+    - sig-storage/csi-attacher
