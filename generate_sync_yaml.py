@@ -1,6 +1,7 @@
 import os
 import yaml
 import requests
+from distutils.version import LooseVersion
 
 # 基本配置
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -9,9 +10,25 @@ SYNC_FILE = os.path.join(BASE_DIR, 'sync.yaml')
 CUSTOM_SYNC_FILE = os.path.join(BASE_DIR, 'custom_sync.yaml')
 
 
-def get_aliyun_tags(image):
+def is_exclude_tag(tag):
     """
-    获取阿里云镜像最新的tag
+    排除tag
+    :param tag:
+    :return:
+    """
+    excludes = ['alpha', 'beta', 'rc', 'amd64', 'ppc64le', 'arm64', 'arm', 's390x', 'SNAPSHOT', '-', 'master', 'latest', 'main']
+
+    for e in excludes:
+        if e.lower() in tag.lower():
+            return True
+        if str.isalpha(tag):
+            return True
+    return False
+
+
+def get_repo_aliyun_tags(image):
+    """
+    获取 aliyuncs repo 最新的 tag
     :param image:
     :return:
     """
@@ -46,15 +63,14 @@ def get_aliyun_tags(image):
     return tags
 
 
-def get_repo_tags(repo, image, limit=5):
+def get_repo_k8s_tags(image, limit=5):
     """
-    获取 repo 最新的 tag
-    :param repo:
+    获取 k8s.gcr.io repo 最新的 tag
     :param image:
     :param limit:
     :return:
     """
-    tag_url = "https://{repo}/v2/{image}/tags/list".format(repo=repo, image=image)
+    tag_url = "https://k8s.gcr.io/v2/{image}/tags/list".format(image=image)
 
     tags = []
     tags_data = []
@@ -72,14 +88,8 @@ def get_repo_tags(repo, image, limit=5):
         sha256_data = manifest_data[manifest]
         sha256_tag = sha256_data.get('tag', [])
         if len(sha256_tag) > 0:
-            # 去除 alpha
-            if 'alpha' in sha256_tag[0]:
-                continue
-            # 去除 beta
-            if 'beta' in sha256_tag[0]:
-                continue
-            # 去除 rc
-            if 'rc' in sha256_tag[0]:
+            # 排除 tag
+            if is_exclude_tag(sha256_tag[0]):
                 continue
             tags_data.append({
                 'tag': sha256_tag[0],
@@ -90,7 +100,7 @@ def get_repo_tags(repo, image, limit=5):
     # limit tag
     tags_limit_data = tags_sort_data[:limit]
 
-    image_aliyun_tags = get_aliyun_tags(image)
+    image_aliyun_tags = get_repo_aliyun_tags(image)
     for t in tags_limit_data:
         # 去除同步过的
         if t['tag'] in image_aliyun_tags:
@@ -100,6 +110,134 @@ def get_repo_tags(repo, image, limit=5):
 
     print('[repo tag]', tags)
     return tags
+
+
+def get_repo_quay_tags(image, limit=5):
+    """
+    获取 quay.io repo 最新的 tag
+    :param image:
+    :param limit:
+    :return:
+    """
+    tag_url = "https://quay.io/api/v1/repository/{image}/tag/?onlyActiveTags=true&limit=100".format(image=image)
+
+    tags = []
+    tags_data = []
+    manifest_data = []
+
+    try:
+        tag_rep = requests.get(url=tag_url)
+        tag_req_json = tag_rep.json()
+        manifest_data = tag_req_json['tags']
+    except Exception as e:
+        print('[Get tag Error]', e)
+        return tags
+
+    for manifest in manifest_data:
+        name = manifest.get('name', '')
+
+        # 排除 tag
+        if is_exclude_tag(name):
+            continue
+
+        tags_data.append({
+            'tag': name,
+            'start_ts': manifest.get('start_ts')
+        })
+
+    tags_sort_data = sorted(tags_data, key=lambda i: i['start_ts'], reverse=True)
+
+    # limit tag
+    tags_limit_data = tags_sort_data[:limit]
+
+    image_aliyun_tags = get_repo_aliyun_tags(image)
+    for t in tags_limit_data:
+        # 去除同步过的
+        if t['tag'] in image_aliyun_tags:
+            continue
+
+        tags.append(t['tag'])
+
+    print('[repo tag]', tags)
+    return tags
+
+
+def get_repo_elastic_tags(image, limit=5):
+    """
+    获取 elastic.io repo 最新的 tag
+    :param image:
+    :param limit:
+    :return:
+    """
+    token_url = "https://docker-auth.elastic.co/auth?service=token-service&scope=repository:{image}:pull".format(
+        image=image)
+    tag_url = "https://docker.elastic.co/v2/{image}/tags/list".format(image=image)
+
+    tags = []
+    tags_data = []
+    manifest_data = []
+
+    hearders = {
+        'User-Agent': 'docker/19.03.12 go/go1.13.10 git-commit/48a66213fe kernel/5.8.0-1.el7.elrepo.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.12 \(linux\))'
+    }
+
+    try:
+        token_res = requests.get(url=token_url, headers=hearders)
+        token_data = token_res.json()
+        access_token = token_data['token']
+    except Exception as e:
+        print('[Get repo token]', e)
+        return tags
+
+    hearders['Authorization'] = 'Bearer ' + access_token
+
+    try:
+        tag_rep = requests.get(url=tag_url, headers=hearders)
+        tag_req_json = tag_rep.json()
+        manifest_data = tag_req_json['tags']
+    except Exception as e:
+        print('[Get tag Error]', e)
+        return tags
+
+    for tag in manifest_data:
+        # 排除 tag
+        if is_exclude_tag(tag):
+            continue
+        tags_data.append(tag)
+
+    tags_sort_data = sorted(tags_data, key=LooseVersion, reverse=True)
+
+    # limit tag
+    tags_limit_data = tags_sort_data[:limit]
+
+    image_aliyun_tags = get_repo_aliyun_tags(image)
+    for t in tags_limit_data:
+        # 去除同步过的
+        if t in image_aliyun_tags:
+            continue
+
+        tags.append(t)
+
+    print('[repo tag]', tags)
+    return tags
+
+
+def get_repo_tags(repo, image, limit=5):
+    """
+    获取 repo 最新的 tag
+    :param repo:
+    :param image:
+    :param limit:
+    :return:
+    """
+    tags_data = []
+    if repo == 'k8s.gcr.io':
+        tags_data = get_repo_k8s_tags(image, limit)
+    elif repo == 'quay.io':
+        tags_data = get_repo_quay_tags(image, limit)
+    elif repo == 'docker.elastic.co':
+        tags_data = get_repo_elastic_tags(image, limit)
+    return tags_data
 
 
 def generate_dynamic_conf():
@@ -140,7 +278,6 @@ def generate_dynamic_conf():
     print('[generate_dynamic_conf] done.', end='\n\n')
 
 
-
 def generate_custom_conf():
     """
     生成自定义的同步配置
@@ -164,7 +301,7 @@ def generate_custom_conf():
         if repo not in custom_skopeo_sync_data:
             custom_skopeo_sync_data[repo] = {'images': {}}
         for image in custom_sync_config[repo]['images']:
-            image_aliyun_tags = get_aliyun_tags(image)
+            image_aliyun_tags = get_repo_aliyun_tags(image)
             for tag in custom_sync_config[repo]['images'][image]:
                 if tag in image_aliyun_tags:
                     continue
