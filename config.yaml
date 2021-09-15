@@ -20,7 +20,7 @@ images:
     - prometheus/pushgateway
     - prometheus/blackbox-exporter
     - prometheus/node-exporter
-    - prometheus/prometheus-config-reloader
+    - prometheus-operator/prometheus-config-reloader
     - prometheus-operator/prometheus-operator
   k8s.gcr.io:
     - etcd
