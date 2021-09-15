@@ -31,6 +31,7 @@ jobs:
         sudo apt-get -y install skopeo
         skopeo --version
     - name: generate_sync_yaml
+      timeout-minutes: 10
       run: |
         python generate_sync_yaml.py
     
