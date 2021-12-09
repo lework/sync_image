@@ -40,3 +40,4 @@ images:
     - sig-storage/csi-resizer
     - sig-storage/csi-snapshotter
     - sig-storage/csi-attacher
+    - kaniko-project/executor
