@@ -23,6 +23,8 @@ def is_exclude_tag(tag):
             return True
         if str.isalpha(tag):
             return True
+        if len(tag) >= 40:
+            return True
     return False
 
 
@@ -63,14 +65,15 @@ def get_repo_aliyun_tags(image):
     return tags
 
 
-def get_repo_k8s_tags(image, limit=5):
+def get_repo_gcr_tags(image, limit=5, host="k8s.gcr.io"):
     """
-    获取 k8s.gcr.io repo 最新的 tag
+    获取 gcr.io repo 最新的 tag
+    :param host:
     :param image:
     :param limit:
     :return:
     """
-    tag_url = "https://k8s.gcr.io/v2/{image}/tags/list".format(image=image)
+    tag_url = "https://{host}/v2/{image}/tags/list".format(host=host, image=image)
 
     tags = []
     tags_data = []
@@ -231,8 +234,10 @@ def get_repo_tags(repo, image, limit=5):
     :return:
     """
     tags_data = []
-    if repo == 'k8s.gcr.io':
-        tags_data = get_repo_k8s_tags(image, limit)
+    if repo == 'gcr.io':
+        tags_data = get_repo_gcr_tags(image, limit, "gcr.io")
+    elif repo == 'k8s.gcr.io':
+        tags_data = get_repo_gcr_tags(image, limit, "k8s.gcr.io")
     elif repo == 'quay.io':
         tags_data = get_repo_quay_tags(image, limit)
     elif repo == 'docker.elastic.co':
@@ -262,11 +267,14 @@ def generate_dynamic_conf():
     for repo in config['images']:
         if repo not in skopeo_sync_data:
             skopeo_sync_data[repo] = {'images': {}}
+        if config['images'][repo] is None:
+            continue
         for image in config['images'][repo]:
             print("[image] {image}".format(image=image))
             sync_tags = get_repo_tags(repo, image, config['last'])
             if len(sync_tags) > 0:
                 skopeo_sync_data[repo]['images'][image] = sync_tags
+                skopeo_sync_data[repo]['images'][image].append('latest')
             else:
                 print('[{image}] no sync tag.'.format(image=image))
 
@@ -300,6 +308,8 @@ def generate_custom_conf():
     for repo in custom_sync_config:
         if repo not in custom_skopeo_sync_data:
             custom_skopeo_sync_data[repo] = {'images': {}}
+        if custom_sync_config[repo]['images'] is None:
+            continue
         for image in custom_sync_config[repo]['images']:
             image_aliyun_tags = get_repo_aliyun_tags(image)
             for tag in custom_sync_config[repo]['images'][image]:
