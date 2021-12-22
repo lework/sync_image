@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 import requests
 from distutils.version import LooseVersion
