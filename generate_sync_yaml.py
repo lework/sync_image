@@ -16,7 +16,7 @@ def is_exclude_tag(tag):
     :param tag:
     :return:
     """
-    excludes = ['alpha', 'beta', 'rc', 'amd64', 'ppc64le', 'arm64', 'arm', 's390x', 'SNAPSHOT', '-', 'master', 'latest', 'main']
+    excludes = ['alpha', 'beta', 'rc', 'amd64', 'ppc64le', 'arm64', 'arm', 's390x', 'SNAPSHOT', 'debug', 'master', 'latest', 'main']
 
     for e in excludes:
         if e.lower() in tag.lower():
@@ -25,6 +25,13 @@ def is_exclude_tag(tag):
             return True
         if len(tag) >= 40:
             return True
+        
+    # 处理带有 - 字符的 tag
+    if re.search("-\d$", tag, re.M | re.I):
+        return False
+    if '-' in tag:
+        return True
+    
     return False
 
 
