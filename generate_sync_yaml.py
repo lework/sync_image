@@ -282,7 +282,7 @@ def generate_dynamic_conf():
             sync_tags = get_repo_tags(repo, image, config['last'])
             if len(sync_tags) > 0:
                 skopeo_sync_data[repo]['images'][image] = sync_tags
-                skopeo_sync_data[repo]['images'][image].append('latest')
+               # skopeo_sync_data[repo]['images'][image].append('latest')
             else:
                 print('[{image}] no sync tag.'.format(image=image))
 
