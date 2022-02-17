@@ -22,6 +22,7 @@ images:
     - prometheus/node-exporter
     - prometheus-operator/prometheus-config-reloader
     - prometheus-operator/prometheus-operator
+    - brancz/kube-rbac-proxy
   k8s.gcr.io:
     - etcd
     - kube-proxy
@@ -34,6 +35,7 @@ images:
     - ingress-nginx/controller
     - ingress-nginx/kube-webhook-certgen
     - kube-state-metrics/kube-state-metrics
+    - prometheus-adapter/prometheus-adapter
     - sig-storage/nfs-subdir-external-provisioner
     - sig-storage/csi-node-driver-registrar
     - sig-storage/csi-provisioner
