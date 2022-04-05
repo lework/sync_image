@@ -14,7 +14,10 @@ images:
     - app-search/app-search
   quay.io:
     - coreos/flannel
+    - ceph/ceph
     - cephcsi/cephcsi
+    - csiaddons/k8s-sidecar
+    - csiaddons/volumereplication-operator
     - prometheus/prometheus
     - prometheus/alertmanager
     - prometheus/pushgateway
