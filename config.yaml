@@ -27,6 +27,7 @@ images:
     - prometheus-operator/prometheus-operator
     - brancz/kube-rbac-proxy
   k8s.gcr.io:
+    - pause
     - etcd
     - kube-proxy
     - kube-apiserver
