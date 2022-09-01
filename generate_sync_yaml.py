@@ -246,6 +246,8 @@ def get_repo_tags(repo, image, limit=5):
         tags_data = get_repo_gcr_tags(image, limit, "gcr.io")
     elif repo == 'k8s.gcr.io':
         tags_data = get_repo_gcr_tags(image, limit, "k8s.gcr.io")
+    elif repo == 'registry.k8s.io':
+        tags_data = get_repo_gcr_tags(image, limit, "registry.k8s.io")
     elif repo == 'quay.io':
         tags_data = get_repo_quay_tags(image, limit)
     elif repo == 'docker.elastic.co':
