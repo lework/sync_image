@@ -81,6 +81,11 @@ def get_repo_gcr_tags(image, limit=5, host="k8s.gcr.io"):
     :param limit:
     :return:
     """
+
+    hearders = {
+        'User-Agent': 'docker/19.03.12 go/go1.13.10 git-commit/48a66213fe kernel/5.8.0-1.el7.elrepo.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.12 \(linux\))'
+    }
+
     tag_url = "https://{host}/v2/{image}/tags/list".format(host=host, image=image)
 
     tags = []
@@ -88,7 +93,7 @@ def get_repo_gcr_tags(image, limit=5, host="k8s.gcr.io"):
     manifest_data = []
 
     try:
-        tag_rep = requests.get(url=tag_url)
+        tag_rep = requests.get(url=tag_url, headers=hearders)
         tag_req_json = tag_rep.json()
         manifest_data = tag_req_json['manifest']
     except Exception as e:
@@ -130,6 +135,11 @@ def get_repo_quay_tags(image, limit=5):
     :param limit:
     :return:
     """
+
+    hearders = {
+        'User-Agent': 'docker/19.03.12 go/go1.13.10 git-commit/48a66213fe kernel/5.8.0-1.el7.elrepo.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.12 \(linux\))'
+    }
+
     tag_url = "https://quay.io/api/v1/repository/{image}/tag/?onlyActiveTags=true&limit=100".format(image=image)
 
     tags = []
@@ -137,7 +147,7 @@ def get_repo_quay_tags(image, limit=5):
     manifest_data = []
 
     try:
-        tag_rep = requests.get(url=tag_url)
+        tag_rep = requests.get(url=tag_url, headers=hearders)
         tag_req_json = tag_rep.json()
         manifest_data = tag_req_json['tags']
     except Exception as e:
