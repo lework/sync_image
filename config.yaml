@@ -27,6 +27,7 @@ images:
     - prometheus-operator/prometheus-operator
     - brancz/kube-rbac-proxy
   k8s.gcr.io:
+    - conformance
     - dns/k8s-dns-node-cache
     - metrics-server/metrics-server
     - ingress-nginx/controller
