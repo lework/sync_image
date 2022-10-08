@@ -30,8 +30,6 @@ images:
     - conformance
     - dns/k8s-dns-node-cache
     - metrics-server/metrics-server
-    - ingress-nginx/controller
-    - ingress-nginx/kube-webhook-certgen
     - kube-state-metrics/kube-state-metrics
     - prometheus-adapter/prometheus-adapter
     - sig-storage/nfs-subdir-external-provisioner
@@ -48,5 +46,8 @@ images:
     - kube-scheduler
     - kube-controller-manager
     - coredns/coredns
+    - ingress-nginx/controller
+    - ingress-nginx/controller-chroot
+    - ingress-nginx/kube-webhook-certgen
   gcr.io:
     - kaniko-project/executor
