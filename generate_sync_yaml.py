@@ -242,6 +242,50 @@ def get_repo_elastic_tags(image, limit=5):
     print('[repo tag]', tags)
     return tags
 
+def get_docker_io_tags(image, limit=5):
+    hearders = {
+        'User-Agent':
+        'docker/19.03.12 go/go1.13.10 git-commit/48a66213fe kernel/5.8.0-1.el7.elrepo.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.12 \(linux\))'
+    }
+    namespace_image = image.split('/')
+    tag_url = "https://hub.docker.com/v2/namespaces/{username}/repositories/{image}/tags".format(
+        username=namespace_image[0], image=namespace_image[1])
+    print(tag_url)
+
+    tags = []
+    tags_data = []
+    manifest_data = []
+
+    try:
+        tag_rep = requests.get(url=tag_url, headers=hearders)
+        tag_req_json = tag_rep.json()
+        manifest_data = tag_req_json['results']
+    except Exception as e:
+        print('[Get tag Error]', e)
+        return tags
+    for tag in manifest_data:
+        name = tag.get('name', '')
+
+        # 排除 tag
+        if is_exclude_tag(name):
+            continue
+
+        tags_data.append(name)
+
+    tags_sort_data = sorted(tags_data, key=LooseVersion, reverse=True)
+
+    # limit tag
+    tags_limit_data = tags_sort_data[:limit]
+
+    image_aliyun_tags = get_repo_aliyun_tags(namespace_image[1])
+    for t in tags_limit_data:
+        # 去除同步过的
+        if t in image_aliyun_tags:
+            continue
+
+        tags.append(t)
+    return tags
+
 
 def get_repo_tags(repo, image, limit=5):
     """
@@ -262,6 +306,8 @@ def get_repo_tags(repo, image, limit=5):
         tags_data = get_repo_quay_tags(image, limit)
     elif repo == 'docker.elastic.co':
         tags_data = get_repo_elastic_tags(image, limit)
+    elif repo == "docker.io":
+        tags_data = get_docker_io_tags(image, limit)
     return tags_data
 
 
