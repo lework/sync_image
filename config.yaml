@@ -27,7 +27,6 @@ images:
     - brancz/kube-rbac-proxy
   k8s.gcr.io:
     - dns/k8s-dns-node-cache
-    - metrics-server/metrics-server
     - kube-state-metrics/kube-state-metrics
     - prometheus-adapter/prometheus-adapter
     - sig-storage/nfs-subdir-external-provisioner
@@ -48,6 +47,7 @@ images:
     - ingress-nginx/controller
     - ingress-nginx/controller-chroot
     - ingress-nginx/kube-webhook-certgen
+    - metrics-server/metrics-server
   gcr.io:
     - kaniko-project/executor
   docker.io:
