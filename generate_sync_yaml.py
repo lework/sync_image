@@ -30,6 +30,9 @@ def is_exclude_tag(tag):
     # 处理带有 - 字符的 tag
     if re.search("-\d$", tag, re.M | re.I):
         return False
+    # v20231011-8b53cabe0
+    if re.search("-\w{9}", tag, re.M | re.I):
+        return False
     if '-' in tag:
         return True
     
