@@ -17,7 +17,7 @@ def is_exclude_tag(tag):
     :param tag:
     :return:
     """
-    excludes = ['alpha', 'beta', 'rc', 'amd64', 'ppc64le', 'arm64', 'arm', 's390x', 'SNAPSHOT', 'debug', 'master', 'latest', 'main']
+    excludes = ['alpha', 'beta', 'rc', 'dev', 'test', 'amd64', 'ppc64le', 'arm64', 'arm', 's390x', 'SNAPSHOT', 'debug', 'master', 'latest', 'main']
 
     for e in excludes:
         if e.lower() in tag.lower():

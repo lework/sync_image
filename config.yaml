@@ -25,16 +25,6 @@ images:
     - prometheus-operator/prometheus-config-reloader
     - prometheus-operator/prometheus-operator
     - brancz/kube-rbac-proxy
-  k8s.gcr.io:
-    - dns/k8s-dns-node-cache
-    - kube-state-metrics/kube-state-metrics
-    - prometheus-adapter/prometheus-adapter
-    - sig-storage/nfs-subdir-external-provisioner
-    - sig-storage/csi-node-driver-registrar
-    - sig-storage/csi-provisioner
-    - sig-storage/csi-resizer
-    - sig-storage/csi-snapshotter
-    - sig-storage/csi-attacher
   registry.k8s.io:
     - pause
     - etcd
@@ -48,6 +38,15 @@ images:
     - ingress-nginx/controller-chroot
     - ingress-nginx/kube-webhook-certgen
     - metrics-server/metrics-server
+    - dns/k8s-dns-node-cache
+    - sig-storage/nfs-subdir-external-provisioner
+    - sig-storage/csi-node-driver-registrar
+    - sig-storage/csi-provisioner
+    - sig-storage/csi-resizer
+    - sig-storage/csi-snapshotter
+    - sig-storage/csi-attacher
+    - kube-state-metrics/kube-state-metrics
+    - prometheus-adapter/prometheus-adapter
   gcr.io:
     - kaniko-project/executor
   docker.io:
