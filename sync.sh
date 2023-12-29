@@ -7,7 +7,7 @@ repo="$hub/kainstall"
 
 if [ -f sync.yaml ]; then
    echo "[Start] sync......."
-   
+   cat sync.yaml custom_sync.yaml
    sudo skopeo login -u ${HUB_USERNAME} -p ${HUB_PASSWORD} ${hub} \
    && sudo skopeo --insecure-policy sync -a --src yaml --dest docker sync.yaml $repo \
    && sudo skopeo --insecure-policy sync -a --src yaml --dest docker custom_sync.yaml $repo
