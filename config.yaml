@@ -25,6 +25,14 @@ images:
     - prometheus-operator/prometheus-config-reloader
     - prometheus-operator/prometheus-operator
     - brancz/kube-rbac-proxy
+    - cilium/cilium
+    - cilium/tetragon
+    - cilium/operator
+    - cilium/operator-generic
+    - cilium/hubble-relay
+    - cilium/hubble-ui
+    - cilium/hubble-ui-backend
+    - cilium/cilium-envoy
   registry.k8s.io:
     - pause
     - etcd
