@@ -29,9 +29,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         . /etc/os-release
-        wget https://github.com/lework/skopeo-binary/releases/download/v1.14.1/skopeo-linux-amd64 -O /usr/bin/skopeo
-        chmod +x /usr/bin/skopeo
-        skopeo --version
+        wget https://github.com/lework/skopeo-binary/releases/download/v1.14.1/skopeo-linux-amd64 -O /tmp/skopeo
+        chmod +x /tmp/skopeo
+        /tmp/skopeo --version
     - name: generate_sync_yaml
       timeout-minutes: 30
       run: |
