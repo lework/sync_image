@@ -245,6 +245,68 @@ def get_repo_elastic_tags(image, limit=5):
     print('[repo tag]', tags)
     return tags
 
+
+def get_repo_ghcr_tags(image, limit=5):
+    """
+    获取 ghcr.io repo 最新的 tag
+    :param image:
+    :param limit:
+    :return:
+    """
+    token_url = "https://ghcr.io/token?service=ghcr.io&scope=repository:{image}:pull".format(
+        image=image)
+
+    tag_url = "https://ghcr.io/v2/{image}/tags/list".format(image=image)
+
+    tags = []
+    tags_data = []
+
+    hearders = {
+        'User-Agent': 'docker/19.03.12 go/go1.13.10 git-commit/48a66213fe kernel/5.8.0-1.el7.elrepo.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.12 \(linux\))'
+    }
+
+    try:
+        token_res = requests.get(url=token_url, headers=hearders)
+        token_data = token_res.json()
+        print("token_data", token_url, token_data)
+        access_token = token_data['token']
+    except Exception as e:
+        print('[Get repo token]', e)
+        return tags
+
+    hearders['Authorization'] = 'Bearer ' + access_token
+
+    try:
+        tag_rep = requests.get(url=tag_url, headers=hearders)
+        tag_req_json = tag_rep.json()
+        manifest_data = tag_req_json['tags']
+    except Exception as e:
+        print('[Get tag Error]', e)
+        return tags
+
+    for tag in manifest_data:
+        # 排除 tag
+        if is_exclude_tag(tag):
+            continue
+        tags_data.append(tag)
+
+    tags_sort_data = sorted(tags_data, key=LooseVersion, reverse=True)
+
+    # limit tag
+    tags_limit_data = tags_sort_data[:limit]
+
+    image_aliyun_tags = get_repo_aliyun_tags(image)
+    for t in tags_limit_data:
+        # 去除同步过的
+        if t in image_aliyun_tags:
+            continue
+
+        tags.append(t)
+
+    print('[repo tag]', tags)
+    return tags
+
+
 def get_docker_io_tags(image, limit=5):
     hearders = {
         'User-Agent':
@@ -309,6 +371,8 @@ def get_repo_tags(repo, image, limit=5):
         tags_data = get_repo_quay_tags(image, limit)
     elif repo == 'docker.elastic.co':
         tags_data = get_repo_elastic_tags(image, limit)
+    elif repo == 'ghcr.io':
+        tags_data = get_repo_ghcr_tags(image, limit)
     elif repo == "docker.io":
         tags_data = get_docker_io_tags(image, limit)
     return tags_data
